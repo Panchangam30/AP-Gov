@@ -277,7 +277,7 @@ function renderResults() {
 
   avgLine.innerHTML = rated.length
     ? `You've rated <b>${rated.length}</b> of ${total}. Average match score: <b>${avg}/5</b>.`
-    : `You haven't rated anything yet — go back and tap some stars.`;
+    : `You haven't rated anything yet, go back and tap some stars.`;
 
   list.innerHTML = items.map((it, i) => {
     const r = ratings[i] || 0;
