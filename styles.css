@@ -52,6 +52,32 @@ header p.sub {
   margin: 16px auto 0;
   font-size: 1rem;
 }
+.reflection {
+  position: relative;
+  max-width: 640px;
+  margin: 26px auto 0;
+  padding: 22px 26px 22px 30px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+  font-family: "Fraunces", serif;
+  font-size: 1.12rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text);
+  text-align: left;
+}
+.reflection .r-label {
+  display: block;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
 
 /* ---------- Carousel ---------- */
 .carousel {
