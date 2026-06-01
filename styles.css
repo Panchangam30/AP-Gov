@@ -5,21 +5,24 @@
   --line: #e3d7c3;         /* soft pencil line */
   --text: #2f2823;         /* warm ink, not black */
   --muted: #8a7d6c;        /* faded ink */
-  --accent: #c07a55;       /* terracotta */
-  --accent-soft: #9a5836;  /* deep terracotta (headings on paper) */
+  --accent: #c0573f;       /* editorial red-terracotta */
+  --accent-soft: #9a4632;  /* deep red (headings on paper) */
   --ink: #fbf6ee;          /* light text used on top of the accent */
+  --edge: #211a14;         /* hard comic ink outline / shadow */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; font-size: 17px; }
 body {
   background:
+    /* fine vertical pinstripes, like printed paper stock */
+    repeating-linear-gradient(90deg, rgba(120,90,60,0.06) 0 1px, transparent 1px 9px),
     /* warm light from the top */
     radial-gradient(1100px 520px at 50% -12%, rgba(224,164,140,0.14), transparent 70%),
     /* fibrous paper grain */
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
     var(--bg);
-  background-blend-mode: normal, soft-light, normal;
+  background-blend-mode: normal, normal, soft-light, normal;
   color: var(--text);
   font-family: "Jost", system-ui, sans-serif;
   line-height: 1.65;
@@ -73,9 +76,27 @@ header {
 header h1 {
   font-family: "Playfair Display", serif;
   font-weight: 900;
-  font-size: clamp(2.1rem, 5vw, 3.4rem);
-  line-height: 1.04;
-  letter-spacing: -0.015em;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  margin-top: 6px;
+}
+/* black highlight box, like a marker swipe */
+.hl-box {
+  background: var(--edge);
+  color: var(--bg);
+  padding: 0.02em 0.2em 0.08em;
+  border-radius: 3px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  box-shadow: 4px 4px 0 rgba(33,26,20,0.25);
+}
+/* red italic word with a highlighter swipe under it */
+.hl-red {
+  color: var(--accent);
+  font-style: italic;
+  background: linear-gradient(transparent 62%, rgba(192,87,63,0.28) 0 88%, transparent 0);
+  padding: 0 0.04em;
 }
 header p.sub {
   color: var(--muted);
@@ -87,18 +108,20 @@ header p.sub {
 .reflection {
   position: relative;
   max-width: 640px;
-  margin: 26px auto 0;
+  margin: 30px auto 0;
   padding: 22px 26px 22px 30px;
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-left: 3px solid var(--accent);
+  border: 2px solid var(--edge);
+  border-left: 6px solid var(--accent);
   border-radius: 12px;
   font-family: "Playfair Display", serif;
-  font-size: 1.12rem;
+  font-size: 1.14rem;
   font-style: italic;
   line-height: 1.5;
   color: var(--text);
   text-align: left;
+  box-shadow: 8px 8px 0 var(--edge);
+  transform: rotate(-0.8deg);
 }
 .reflection .r-label {
   display: block;
@@ -121,9 +144,9 @@ header p.sub {
   width: max-content;
   max-width: calc(100% - 32px);
   background: var(--panel);
-  border: 1px solid var(--line);
+  border: 2px solid var(--edge);
   border-radius: 999px;
-  box-shadow: 0 10px 24px -16px rgba(90,65,45,0.4);
+  box-shadow: 4px 4px 0 var(--edge);
 }
 .tab {
   appearance: none;
@@ -177,10 +200,10 @@ header p.sub {
 
 .game-card {
   background: var(--panel);
-  border: 1px solid var(--line);
+  border: 2px solid var(--edge);
   border-radius: 20px;
   padding: 18px;
-  box-shadow: 0 22px 48px -28px rgba(90,65,45,0.45);
+  box-shadow: 10px 10px 0 var(--edge);
 }
 .game-media {
   border-radius: 12px;
@@ -240,19 +263,24 @@ header p.sub {
 .game-feedback.no { color: #b03651; }
 .game-next, .game-restart {
   display: block;
-  margin: 16px auto 0;
+  margin: 18px auto 0;
   background: var(--accent);
   color: var(--ink);
-  border: none;
+  border: 2px solid var(--edge);
   border-radius: 999px;
   font-family: "Jost", sans-serif;
   font-weight: 700;
   font-size: 0.9rem;
   padding: 11px 26px;
   cursor: pointer;
-  transition: transform 0.12s ease, filter 0.2s ease;
+  box-shadow: 4px 4px 0 var(--edge);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.2s ease;
 }
-.game-next:hover, .game-restart:hover { transform: translateY(-2px); filter: brightness(1.05); }
+.game-next:hover, .game-restart:hover { filter: brightness(1.05); }
+.game-next:active, .game-restart:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 var(--edge);
+}
 .game-results { text-align: center; padding: 30px 0 10px; }
 .game-results h3 {
   font-family: "Playfair Display", serif;
@@ -326,6 +354,8 @@ header p.sub {
   overflow: hidden;
   width: 100%;
   border-radius: 24px;
+  border: 2px solid var(--edge);
+  box-shadow: 12px 12px 0 var(--edge);
 }
 .track {
   display: flex;
@@ -338,10 +368,8 @@ header p.sub {
   display: grid;
   grid-template-columns: 1fr 1fr;
   background: var(--panel);
-  border: 1px solid var(--line);
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 22px 48px -28px rgba(90,65,45,0.45);
 }
 
 /* media */
@@ -472,8 +500,9 @@ header p.sub {
   z-index: 5;
   width: 50px; height: 50px;
   border-radius: 50%;
-  border: 1px solid var(--line);
-  background: var(--panel-2);
+  border: 2px solid var(--edge);
+  background: var(--panel);
+  box-shadow: 3px 3px 0 var(--edge);
   color: var(--text);
   font-size: 1.7rem;
   line-height: 1;
@@ -539,10 +568,8 @@ header p.sub {
 .results {
   min-width: 100%;
   background: var(--panel);
-  border: 1px solid var(--line);
   border-radius: 24px;
   padding: 46px 44px;
-  box-shadow: 0 22px 48px -28px rgba(90,65,45,0.45);
 }
 .results h2 {
   font-family: "Playfair Display", serif;
@@ -610,10 +637,10 @@ footer .hint { display: block; margin-top: 6px; font-size: 0.72rem; opacity: 0.7
 }
 .doc-frame {
   background: var(--panel);
-  border: 1px solid var(--line);
+  border: 2px solid var(--edge);
   border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 22px 48px -28px rgba(90,65,45,0.45);
+  box-shadow: 10px 10px 0 var(--edge);
 }
 .doc-frame iframe {
   display: block;
