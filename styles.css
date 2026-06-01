@@ -79,6 +79,53 @@ header p.sub {
   margin-bottom: 10px;
 }
 
+/* ---------- Music toggle ---------- */
+.music-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 16px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.music-toggle:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+.music-toggle.playing {
+  border-color: var(--accent);
+  background: var(--panel);
+}
+.music-toggle .music-icon {
+  font-size: 1.05rem;
+  color: var(--accent);
+  line-height: 1;
+}
+.music-toggle.playing .music-icon {
+  animation: music-bob 0.6s ease-in-out infinite alternate;
+}
+@keyframes music-bob {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-3px); }
+}
+@media (max-width: 520px) {
+  .music-toggle .music-label { display: none; }
+  .music-toggle { padding: 12px; }
+}
+
 /* ---------- Carousel ---------- */
 .carousel {
   position: relative;

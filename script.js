@@ -356,3 +356,95 @@ track.addEventListener("touchend", (e) => {
   }
   startX = startY = null;
 });
+
+/* ---------------- Upbeat background music (Web Audio, no files) ---------------- */
+(function () {
+  const btn = document.getElementById("musicToggle");
+  const label = document.getElementById("musicLabel");
+  const icon = document.getElementById("musicIcon");
+  if (!btn) return;
+
+  let ctx = null;
+  let master = null;
+  let playing = false;
+  let stepTimer = null;
+  let step = 0;
+
+  // Bright, upbeat C-major progression in an arpeggio + bass groove (~120 BPM).
+  const STEP_MS = 250; // eighth notes at ~120 BPM
+  const N = (n) => 440 * Math.pow(2, (n - 69) / 12); // MIDI note -> Hz
+
+  // Chords: C  -> Am -> F -> G  (classic happy loop), each lasts 4 steps
+  const chords = [
+    [60, 64, 67, 72], // C
+    [57, 60, 64, 69], // Am
+    [53, 57, 60, 65], // F
+    [55, 59, 62, 67], // G
+  ];
+  const bassNotes = [36, 33, 29, 31]; // C2, A1, F1, G1
+
+  function tone(freq, start, dur, type, gain) {
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, start);
+    g.gain.exponentialRampToValueAtTime(gain, start + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+    o.connect(g).connect(master);
+    o.start(start);
+    o.stop(start + dur + 0.02);
+  }
+
+  function tick() {
+    const t = ctx.currentTime + 0.02;
+    const chordIdx = Math.floor(step / 4) % chords.length;
+    const chord = chords[chordIdx];
+    const posInChord = step % 4;
+
+    // bouncy arpeggio melody (square = bright/chiptune)
+    const mel = chord[posInChord] + 12;
+    tone(N(mel), t, 0.22, "square", 0.06);
+
+    // bass on each step, stronger on the downbeat
+    const bass = bassNotes[chordIdx];
+    tone(N(bass), t, 0.26, "triangle", posInChord === 0 ? 0.12 : 0.08);
+
+    // light sparkle on offbeats
+    if (posInChord % 2 === 1) tone(N(chord[3] + 24), t, 0.12, "sine", 0.025);
+
+    step = (step + 1) % (chords.length * 4);
+  }
+
+  function start() {
+    ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === "suspended") ctx.resume();
+    master = ctx.createGain();
+    master.gain.value = 0.0;
+    master.connect(ctx.destination);
+    master.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.4); // fade in
+    step = 0;
+    tick();
+    stepTimer = setInterval(tick, STEP_MS);
+    playing = true;
+    btn.classList.add("playing");
+    btn.setAttribute("aria-pressed", "true");
+    if (label) label.textContent = "Pause music";
+    if (icon) icon.innerHTML = "&#9836;";
+  }
+
+  function stop() {
+    if (stepTimer) clearInterval(stepTimer);
+    stepTimer = null;
+    if (master) {
+      master.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
+    }
+    playing = false;
+    btn.classList.remove("playing");
+    btn.setAttribute("aria-pressed", "false");
+    if (label) label.textContent = "Play music";
+    if (icon) icon.innerHTML = "&#9835;";
+  }
+
+  btn.addEventListener("click", () => (playing ? stop() : start()));
+})();
