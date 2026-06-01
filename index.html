@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AP Government Photo Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <div class="eyebrow">AP U.S. Government &amp; Politics</div>
+    <h1>Power, Divided</h1>
+    <p class="sub">One big idea ties all fifteen objects together: the Founders were scared of any one person or group having too much power, so the whole system is built to divide it, check it, share it, and keep it connected to the people. Each object shows one way America keeps power from ending up in one place. Flip through and rate how well each image matches its term.</p>
+  </header>
+
+  <!-- Carousel -->
+  <section class="carousel" id="carousel" aria-label="Photo carousel">
+    <button class="nav prev" id="prevBtn" aria-label="Previous">&#8249;</button>
+
+    <div class="viewport">
+      <div class="track" id="track"><!-- slides injected by script.js --></div>
+    </div>
+
+    <button class="nav next" id="nextBtn" aria-label="Next">&#8250;</button>
+  </section>
+
+  <!-- Controls under the carousel -->
+  <div class="controls">
+    <div class="counter"><span id="current">1</span> <span class="slash">/</span> <span id="total">15</span></div>
+    <div class="dots" id="dots"></div>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  </div>
+
+  <footer>
+    Fifteen objects, one idea &mdash; power is meant to be divided, checked, and shared, never held by one.
+    <span class="hint">Use &larr; &rarr; arrow keys to navigate</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
