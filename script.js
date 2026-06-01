@@ -357,6 +357,142 @@ track.addEventListener("touchend", (e) => {
   startX = startY = null;
 });
 
+/* ---------------- Tabs ---------------- */
+(function () {
+  const tabs = document.querySelectorAll(".tab");
+  const panels = {
+    gallery: document.getElementById("panelGallery"),
+    game: document.getElementById("panelGame"),
+  };
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const target = tab.dataset.panel;
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.classList.toggle("active", on);
+        t.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      Object.entries(panels).forEach(([key, el]) => {
+        if (!el) return;
+        const on = key === target;
+        el.classList.toggle("active", on);
+        el.hidden = !on;
+      });
+      if (target === "game" && !window.__gameStarted) startGame();
+    });
+  });
+})();
+
+/* ---------------- Match the picture to the term ---------------- */
+let qOrder = [];
+let qPos = 0;
+let qScore = 0;
+
+const qImage = document.getElementById("qImage");
+const qChoices = document.getElementById("qChoices");
+const qFeedback = document.getElementById("qFeedback");
+const qNextBtn = document.getElementById("qNext");
+const qCurrentEl = document.getElementById("qCurrent");
+const qTotalEl = document.getElementById("qTotal");
+const qScoreEl = document.getElementById("qScore");
+const gameCard = document.getElementById("gameCard");
+const gameResults = document.getElementById("gameResults");
+const qFinal = document.getElementById("qFinal");
+const qRestart = document.getElementById("qRestart");
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = (Math.random() * (i + 1)) | 0;
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startGame() {
+  window.__gameStarted = true;
+  qOrder = shuffle(items.map((_, i) => i));
+  qPos = 0;
+  qScore = 0;
+  if (qScoreEl) qScoreEl.textContent = "0";
+  if (qTotalEl) qTotalEl.textContent = String(items.length);
+  if (gameResults) gameResults.hidden = true;
+  if (gameCard) gameCard.hidden = false;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const correctIdx = qOrder[qPos];
+  const correct = items[correctIdx];
+
+  // 3 distractor terms + the correct one, shuffled
+  const others = shuffle(items.map((_, i) => i).filter((i) => i !== correctIdx)).slice(0, 3);
+  const choiceIdxs = shuffle([correctIdx, ...others]);
+
+  qImage.src = correct.img;
+  qImage.alt = "What term does this object represent?";
+  qCurrentEl.textContent = String(qPos + 1);
+  qFeedback.textContent = "";
+  qFeedback.className = "game-feedback";
+  qNextBtn.hidden = true;
+
+  qChoices.innerHTML = "";
+  choiceIdxs.forEach((i) => {
+    const btn = document.createElement("button");
+    btn.className = "choice";
+    btn.textContent = items[i].term;
+    btn.addEventListener("click", () => handleAnswer(btn, i === correctIdx, correct.term));
+    qChoices.appendChild(btn);
+  });
+}
+
+function handleAnswer(btn, isCorrect, correctTerm) {
+  const buttons = qChoices.querySelectorAll(".choice");
+  buttons.forEach((b) => {
+    b.disabled = true;
+    if (b.textContent === correctTerm) b.classList.add("correct");
+  });
+
+  if (isCorrect) {
+    qScore++;
+    qScoreEl.textContent = String(qScore);
+    qFeedback.textContent = "Correct!";
+    qFeedback.className = "game-feedback ok";
+  } else {
+    btn.classList.add("wrong");
+    qFeedback.textContent = "Not quite — it's " + correctTerm + ".";
+    qFeedback.className = "game-feedback no";
+  }
+
+  qNextBtn.hidden = false;
+  qNextBtn.textContent = qPos < items.length - 1 ? "Next ›" : "See results ›";
+}
+
+if (qNextBtn) {
+  qNextBtn.addEventListener("click", () => {
+    qPos++;
+    if (qPos < items.length) {
+      renderQuestion();
+    } else {
+      showGameResults();
+    }
+  });
+}
+
+function showGameResults() {
+  if (gameCard) gameCard.hidden = true;
+  if (gameResults) gameResults.hidden = false;
+  const pct = Math.round((qScore / items.length) * 100);
+  let note = "Keep studying!";
+  if (pct === 100) note = "Perfect score!";
+  else if (pct >= 80) note = "Great work!";
+  else if (pct >= 60) note = "Solid effort.";
+  qFinal.innerHTML = "You matched <b>" + qScore + "/" + items.length + "</b> (" + pct + "%). " + note;
+  if (pct === 100 && window.__confettiBurst) window.__confettiBurst();
+}
+
+if (qRestart) qRestart.addEventListener("click", startGame);
+
 /* ---------------- Gold confetti burst ---------------- */
 (function () {
   const btn = document.getElementById("confettiBtn");
@@ -436,4 +572,5 @@ track.addEventListener("touchend", (e) => {
   }
 
   btn.addEventListener("click", burst);
+  window.__confettiBurst = burst;
 })();

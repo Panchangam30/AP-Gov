@@ -20,6 +20,15 @@
     </blockquote>
   </header>
 
+  <!-- Tabs -->
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab active" id="tabGallery" role="tab" aria-selected="true" aria-controls="panelGallery" data-panel="gallery">Gallery</button>
+    <button class="tab" id="tabGame" role="tab" aria-selected="false" aria-controls="panelGame" data-panel="game">Match Game</button>
+  </nav>
+
+  <!-- ===================== Gallery panel ===================== -->
+  <div class="panel active" id="panelGallery" role="tabpanel" aria-labelledby="tabGallery">
+
   <!-- Carousel -->
   <section class="carousel" id="carousel" aria-label="Photo carousel">
     <button class="nav prev" id="prevBtn" aria-label="Previous">&#8249;</button>
@@ -55,6 +64,39 @@
   <footer>
     <span class="hint">Use &larr; &rarr; arrow keys to navigate</span>
   </footer>
+
+  </div><!-- /panelGallery -->
+
+  <!-- ===================== Match Game panel ===================== -->
+  <div class="panel" id="panelGame" role="tabpanel" aria-labelledby="tabGame" hidden>
+    <section class="game" id="game" aria-label="Match the picture to the term">
+      <div class="game-head">
+        <div class="eyebrow">Quiz Yourself</div>
+        <h2>Match the Picture to the Term</h2>
+        <p class="game-sub">Look at the object, then pick the AP Gov term it represents.</p>
+      </div>
+
+      <div class="game-bar">
+        <div class="game-progress"><span id="qCurrent">1</span> / <span id="qTotal">15</span></div>
+        <div class="game-score">Score: <b id="qScore">0</b></div>
+      </div>
+
+      <div class="game-card" id="gameCard">
+        <div class="game-media">
+          <img id="qImage" src="" alt="Mystery object" />
+        </div>
+        <div class="game-choices" id="qChoices"><!-- answer buttons injected --></div>
+        <div class="game-feedback" id="qFeedback"></div>
+        <button class="game-next" id="qNext" hidden>Next &#8250;</button>
+      </div>
+
+      <section class="game-results" id="gameResults" hidden>
+        <h3>Quiz Complete</h3>
+        <div class="game-final" id="qFinal"></div>
+        <button class="game-restart" id="qRestart">Play again</button>
+      </section>
+    </section>
+  </div><!-- /panelGame -->
 
   <!-- Confetti -->
   <canvas class="confetti-canvas" id="confettiCanvas" aria-hidden="true"></canvas>
